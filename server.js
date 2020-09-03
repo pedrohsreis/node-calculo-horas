@@ -4,13 +4,14 @@ const init = async () => {
 
     const server = Hapi.server({
         port: 4000,
-        host: 'localhost'
+        host: 'localhost',
+        
     });
 
     server.route({
         method: 'GET',
         path: '/calcular/{inicial}/{final}',
-        handler: (request, h) => {
+        handler: (request, h) => { //HH::
 
             const inicial = request.params.inicial;
             const final = request.params.final;
@@ -26,13 +27,14 @@ const init = async () => {
 
             var horasDiurnas, horasNoturnas, minutosDiurnos, minutosNoturnos;
 
+
             if(horasInicial + horasTrabalhadas > 22){
                 horasDiurnas = horasTrabalhadas - ((horasInicial + horasTrabalhadas) - 22);
             }
             if(horasInicial + horasTrabalhadas > 29){
                 horasDiurnas += (horasInicial + horasTrabalhadas) - 31;
             }
-            horasNoturnas = horasTrabalhadas - (horasDiurnas + 2);
+            horasNoturnas = Math.abs(horasTrabalhadas - (horasDiurnas + 2));
 
             if(minutosTrabalhados > 59){
                 minutosNoturnos = minutosTrabalhados - 59;
@@ -42,7 +44,10 @@ const init = async () => {
                 minutosNoturnos = 0;
             }
 
-            return horasTrabalhadas + ":" + minutosTrabalhados + " Horas diurnas: " + horasDiurnas + ":" + minutosDiurnos + " Horas noturnas: " + horasNoturnas + ":" + minutosNoturnos;
+            return {
+                horasDiurnas: horasDiurnas + ":" + minutosDiurnos,
+                horasNoturnas: horasNoturnas + ":" + minutosNoturnos
+            };
         }
     });
 
